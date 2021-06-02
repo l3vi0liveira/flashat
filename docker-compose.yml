@@ -1,0 +1,14 @@
+version: "3"
+services:
+  postgresql:
+    container_name: postgresql-flashat
+    image: postgres:11.2-alpine
+    command: postgres -c 'max_connections=500'
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: flashat
+    restart: always
+    shm_size: "256mb"
+    ports:
+      - 5437:5432
