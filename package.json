@@ -12,6 +12,7 @@
     "dotenv": "^10.0.0",
     "express": "^4.17.1",
     "github": "^14.0.0",
+    "jsonwebtoken": "^8.5.1",
     "mariadb": "^2.5.3",
     "multer": "^1.4.2",
     "multipart": "^0.1.5",
