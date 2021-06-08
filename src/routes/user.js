@@ -2,12 +2,10 @@ const express = require("express");
 
 const router = express.Router();
 
-const conttrolerUser = require("../controller/user");
-const { verifyToken } = require("../middleware/token");
+const controllerUser = require("../controller/user");
 
 //********User***********
-router.post("/user/create",conttrolerUser.create);
-router.post("/user/login",conttrolerUser.login);
-router.post("/user/chat",verifyToken, conttrolerUser.chat)
+router.post("/user/create",controllerUser.create);
+router.post("/user/login",controllerUser.login);
 
-module.exports = router
+module.exports = router;

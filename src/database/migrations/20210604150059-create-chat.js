@@ -8,8 +8,6 @@ module.exports = {
         autoIncrement: true,
         primaryKey: true,
       },
-      idUser1: Sequelize.INTEGER,
-      idUser2: Sequelize.INTEGER,
       createdAt: Sequelize.DATE,
       updatedAt: Sequelize.DATE,
     });
