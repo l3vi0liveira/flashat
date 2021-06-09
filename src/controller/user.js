@@ -39,10 +39,13 @@ exports.login = async (req, res) => {
   if (!verifyPhone || !compare(verifyPhone.password, req.body.password)) {
     res.json({ message: "User not found" });
   }
-  token = jwt.sign({ id: tableUser.id }, process.env.SECRET, {
-    expiresIn: 3600,
-  });
-
+  token = jwt.sign(
+    { id: verifyPhone.id, phone: verifyPhone.phone },
+    process.env.SECRET,
+    {
+      expiresIn: 3600,
+    }
+  );
   return res.json({ message: "Successfully logged:", token });
 };
 
