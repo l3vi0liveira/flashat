@@ -50,3 +50,15 @@ exports.login = async (req, res) => {
 };
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
+
+exports.show = async (req, res) => {
+  const getToken = req.headers.authorization.split(" ")[1];
+  const myUserId = jwt.decode(getToken);
+  const showUser = await tableUser.findOne({
+    where: { id: myUserId.id },
+    attributes:{exclude :["password"]}
+  });
+  res.json(showUser);
+};
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////
