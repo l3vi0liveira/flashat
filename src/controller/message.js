@@ -19,13 +19,16 @@ exports.sendMessage = async (req, res) => {
 };
 
 exports.showMessage = async (req, res) => {
+  const chatId = req.params.chatId
+  console.log(chatId)
   const showMessage = await tableMessage.findAll({
+    where: {chatId: chatId},
     include:{
       model: tableUser,
       as:"users",
       attributes: {exclude:["password"]}
     },
-    
+  
   })
   return res.json(showMessage);
 };

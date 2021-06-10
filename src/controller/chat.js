@@ -16,5 +16,5 @@ exports.createchat = async (req, res) => {
     await userChat.addUser(myUserId.id);
     return res.json(userChat);
   }
-  return res.json({ message: "Chat already exists, chat ID: " + findChat.id });
+  return res.json({ userChat });
 };
