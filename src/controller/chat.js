@@ -2,8 +2,9 @@ const models = require("../models");
 const { search, get } = require("../routes");
 const tableChat = models.Chat;
 const tableUser = models.User;
-const {Op} = require("sequelize")
+const { Op } = require("sequelize");
 const jwt = require("jsonwebtoken");
+const { configServices } = require("docker-compose");
 
 exports.createchat = async (req, res) => {
   const getToken = req.headers.authorization.split(" ")[1];
@@ -11,35 +12,37 @@ exports.createchat = async (req, res) => {
   const otherUserId = req.body.userId;
   const ids = [myUserId.id, otherUserId];
 
-  const findChat = await tableChat.findOne({
-    include: [
-      {
-        model: models.User,
-        as: "user",
-        where: {
-          id: {
-            [Op.in]: ids,
+  const findUser = await tableUser.findByPk(otherUserId);
+
+  if (otherUserId == myUserId.id) {
+    return res.json({
+      message: "It is not possible to add a chat with yourself",
+    });
+  }
+  
+  if (findUser && otherUserId == Number) {
+    const findChat = await tableChat.findOne({
+      include: [
+        {
+          model: models.User,
+          as: "user",
+          where: {
+            id: {
+              [Op.in]: ids,
+            },
           },
         },
-      },
-    ],
-  }); 
-    console.log("1////////////////////////////////////////dhauhdushasudhdsuashudhaushduashduhasudhushduashduash")
+      ],
+    });
 
-    
-   
-  console.log(findChat)
+    if (findChat == null) {
+      const userChat = await tableChat.create(req.body);
+      await userChat.addUser(otherUserId);
+      await userChat.addUser(myUserId.id);
+      return res.json(userChat);
+    }
 
-  if(findChat.user.length != 2) {
-    const userChat = await tableChat.create(req.body);
-    await userChat.addUser(otherUserId);yarn 
-    await userChat.addUser(myUserId.id);
-    console.log("2////////////////////////////////////////dhauhdushasudhdsuashudhaushduashduhasudhushduashduash")
-    return res.json(userChat);
-
-
+    return res.json(findChat);
   }
-  console.log("3////////////////////////////////////////dhauhdushasudhdsuashudhaushduashduhasudhushduashduash")
-
-  return res.json(findChat);
+  return res.json({ message: "UserId not exists" });
 };
