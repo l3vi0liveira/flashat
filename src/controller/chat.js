@@ -19,8 +19,8 @@ exports.createchat = async (req, res) => {
       message: "It is not possible to add a chat with yourself",
     });
   }
-  
-  if (findUser && otherUserId == Number) {
+ 
+  if (findUser) {
     const findChat = await tableChat.findOne({
       include: [
         {
@@ -35,7 +35,7 @@ exports.createchat = async (req, res) => {
       ],
     });
 
-    if (findChat == null) {
+    if (!findChat) {
       const userChat = await tableChat.create(req.body);
       await userChat.addUser(otherUserId);
       await userChat.addUser(myUserId.id);

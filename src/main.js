@@ -4,7 +4,6 @@ const bodyParser = require("body-parser")
 const multer = require("multer");
 const path = require("path");
 dotenv.config();
-let loggedUser = {}
 
 const setupSequelize = require("./models");
 const routes = require("./routes");

@@ -7,6 +7,7 @@
   },
   "license": "MIT",
   "dependencies": {
+    "@multipart/form-data": "^1.0.1",
     "body-parser": "^1.19.0",
     "crypto": "^1.0.1",
     "dotenv": "^10.0.0",
