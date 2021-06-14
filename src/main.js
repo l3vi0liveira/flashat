@@ -3,6 +3,7 @@ const dotenv = require("dotenv");
 const bodyParser = require("body-parser")
 const multer = require("multer");
 const path = require("path");
+const cors = require("cors")
 dotenv.config();
 
 const setupSequelize = require("./models");
@@ -10,6 +11,7 @@ const routes = require("./routes");
 
 const app = express();
 
+app.use(cors())
 app.use(
   "/files",
   express.static(path.resolve(__dirname, "..", "tmp", "uploads"))

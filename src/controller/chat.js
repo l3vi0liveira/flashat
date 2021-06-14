@@ -25,7 +25,7 @@ exports.createchat = async (req, res) => {
       include: [
         {
           model: models.User,
-          as: "user",
+          as: "users",
           where: {
             id: {
               [Op.in]: ids,
@@ -39,6 +39,15 @@ exports.createchat = async (req, res) => {
       const userChat = await tableChat.create(req.body);
       await userChat.addUser(otherUserId);
       await userChat.addUser(myUserId.id);
+ 
+      return res.json(userChat);
+    }
+
+    if (findChat.users === 1) {
+      const userChat = await tableChat.create(req.body);
+      await userChat.addUser(otherUserId);
+      await userChat.addUser(myUserId.id);
+      console.log(findChat)
       return res.json(userChat);
     }
 
