@@ -8,5 +8,6 @@ const controllerUser = require("../controller/user");
 router.post("/user/create",controllerUser.create);
 router.post("/user/login",controllerUser.login);
 router.get("/user/showUser",controllerUser.show)
+router.put("/user/modifyUser",controllerUser.modify)
 
 module.exports = router;

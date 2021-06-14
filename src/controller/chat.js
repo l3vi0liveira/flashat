@@ -35,7 +35,7 @@ exports.createchat = async (req, res) => {
       ],
     });
 
-    if (!findChat) {
+    if (findChat == null) {
       const userChat = await tableChat.create(req.body);
       await userChat.addUser(otherUserId);
       await userChat.addUser(myUserId.id);

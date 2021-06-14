@@ -56,9 +56,25 @@ exports.show = async (req, res) => {
   const myUserId = jwt.decode(getToken);
   const showUser = await tableUser.findOne({
     where: { id: myUserId.id },
-    attributes:{exclude :["password"]}
+    attributes: { exclude: ["password"] },
   });
   res.json(showUser);
+};
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+
+exports.modify = async (req, res) => {
+  const getToken = req.headers.authorization.split(" ")[1];
+  const myUserId = jwt.decode(getToken);
+  console.log(myUserId.id)
+  const modifyUser = await tableUser.update({
+    where: { id: myUserId.id },
+    name: req.body.name,
+    password: req.body.password,
+    email: req.body.email,
+  });
+  console.log(modifyUser)
+  res.json("dsfs");
 };
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
