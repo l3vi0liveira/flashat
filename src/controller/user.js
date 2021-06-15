@@ -66,15 +66,18 @@ exports.show = async (req, res) => {
 exports.modify = async (req, res) => {
   const getToken = req.headers.authorization.split(" ")[1];
   const myUserId = jwt.decode(getToken);
-  console.log(myUserId.id)
-  const modifyUser = await tableUser.update({
-    where: { id: myUserId.id },
-    name: req.body.name,
-    password: req.body.password,
-    email: req.body.email,
-  });
-modifyUser = await tableUser.findByPk(myUserId);
-  res.json("dsfs");
+
+  const { name, password, email } = req.body;
+
+  const passwordHash = createHash(password);
+
+  await tableUser.update(
+    { name, password: passwordHash, email },
+    { where: { id: myUserId.id } }
+  );
+
+  const modifyUser = await tableUser.findByPk(myUserId.id);
+  res.json(modifyUser);
 };
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
