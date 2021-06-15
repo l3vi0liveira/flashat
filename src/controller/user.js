@@ -46,7 +46,7 @@ exports.login = async (req, res) => {
       expiresIn: 3600,
     }
   );
-  return res.json({ message: "Successfully logged:", token });
+  return res.json({ message: "Login: "+verifyPhone.id+"  Successfully logged:", token });
 };
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
