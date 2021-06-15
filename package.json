@@ -20,14 +20,13 @@
     "multipart": "^0.1.5",
     "mysql2": "^2.2.5",
     "nodemon": "^2.0.7",
+    "path": "^0.12.7",
     "pg": "^8.6.0",
-    "pg-hstore": "^2.3.3",
+    "pg-hstore": "^2.3.4",
     "sequelize": "^6.6.2",
-    "sqlite3": "^5.0.2",
-    "tedious": "^11.0.8"
+    "sqlite3": "^5.0.2"
   },
   "devDependencies": {
-    "docker-compose": "^0.23.10",
     "sequelize-cli": "^6.2.0"
   }
 }

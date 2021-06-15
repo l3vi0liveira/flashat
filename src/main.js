@@ -1,12 +1,9 @@
 const express = require("express");
 const dotenv = require("dotenv");
 const bodyParser = require("body-parser")
-const multer = require("multer");
 const path = require("path");
-const cors = require("cors")
-dotenv.config();
+const cors = require("cors");
 
-const setupSequelize = require("./models");
 const routes = require("./routes");
 
 const app = express();
@@ -17,9 +14,7 @@ app.use(
   express.static(path.resolve(__dirname, "..", "tmp", "uploads"))
 );
 
-app.use(bodyParser.urlencoded({ extended: false }));
-
-app.use(bodyParser.json());
+app.use(bodyParser.json())
 
 app.use(routes);
 

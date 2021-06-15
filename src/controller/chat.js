@@ -4,7 +4,6 @@ const tableChat = models.Chat;
 const tableUser = models.User;
 const { Op } = require("sequelize");
 const jwt = require("jsonwebtoken");
-const { configServices } = require("docker-compose");
 const chat = require("../models/chat");
 
 exports.createchat = async (req, res) => {
@@ -20,7 +19,6 @@ exports.createchat = async (req, res) => {
       message: "It is not possible to add a chat with yourself",
     });
   }
-  console.log(ids);
   if (findUser) {
     const findUm = await tableChat.findAll({
       include: [

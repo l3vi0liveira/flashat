@@ -10,24 +10,26 @@ exports.sendMessage = async (req, res) => {
   const getToken = req.headers.authorization.split(" ")[1];
   const myUserId = jwt.decode(getToken);
   const chatID = req.params.chatId;
-  const text = req.body.text;
-  const file = req.file;
-  console.log(file);
-  console.log(text);
-
-  const newMessage = await tableMessage.create({
+  const sendMessage = await tableMessage.create({
     chatId: chatID,
     userId: myUserId.id,
-    text,
+    text: req.body.text,
   });
+
   if (req.file) {
     await tableFile.create({
-      messageId: newMessage.id,
+      messageId: sendMessage.id,
       ...req.file,
     });
   }
-
-  return res.json(newMessage);
+  const result = await tableMessage.findOne({
+    where: { id: sendMessage.id },
+    include: {
+      model: tableFile,
+      as: "file",
+    },
+  });
+  return res.json(result);
 };
 
 exports.showMessage = async (req, res) => {
@@ -38,6 +40,10 @@ exports.showMessage = async (req, res) => {
       model: tableUser,
       as: "users",
       attributes: { exclude: ["password"] },
+    },
+    include: {
+      model: tableFile,
+      as: "file",
     },
   });
   return res.json(showMessage);

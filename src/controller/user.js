@@ -1,6 +1,5 @@
 const models = require("../models");
 const sequelize = require("sequelize");
-const { search } = require("../routes");
 const crypto = require("crypto");
 const { createHash, compare } = require("../utils/crypto");
 const tableUser = models.User;
@@ -46,7 +45,7 @@ exports.login = async (req, res) => {
       expiresIn: 3600,
     }
   );
-  return res.json({ message: "Login: "+verifyPhone.id+"  Successfully logged:", token });
+  return res.json({ message:  "Successfully logged:", token, "Login": verifyPhone.id });;
 };
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
