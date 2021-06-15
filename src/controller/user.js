@@ -73,7 +73,7 @@ exports.modify = async (req, res) => {
     password: req.body.password,
     email: req.body.email,
   });
-  console.log(modifyUser)
+modifyUser = await tableUser.findByPk(myUserId);
   res.json("dsfs");
 };
 

@@ -5,6 +5,7 @@ const tableUser = models.User;
 const { Op } = require("sequelize");
 const jwt = require("jsonwebtoken");
 const { configServices } = require("docker-compose");
+const chat = require("../models/chat");
 
 exports.createchat = async (req, res) => {
   const getToken = req.headers.authorization.split(" ")[1];
@@ -19,39 +20,47 @@ exports.createchat = async (req, res) => {
       message: "It is not possible to add a chat with yourself",
     });
   }
- 
+  console.log(ids);
   if (findUser) {
-    const findChat = await tableChat.findOne({
+    const findUm = await tableChat.findAll({
       include: [
         {
           model: models.User,
           as: "users",
           where: {
-            id: {
-              [Op.in]: ids,
-            },
+            id: myUserId.id,
           },
         },
       ],
     });
-
-    if (findChat == null) {
-      const userChat = await tableChat.create(req.body);
-      await userChat.addUser(otherUserId);
-      await userChat.addUser(myUserId.id);
- 
-      return res.json(userChat);
+    const findDois = await tableChat.findAll({
+      include: [
+        {
+          model: models.User,
+          as: "users",
+          where: {
+            id: otherUserId,
+          },
+        },
+      ],
+    });
+    let teste;
+    for (let i = 0; i < findUm.length; i = i + 1) {
+      for (let j = 0; j < findDois.length; j = j + 1) {
+        if (findUm[i].id === findDois[j].id) {
+          teste = findUm[i].id;
+        }
+      }
     }
 
-    if (findChat.users === 1) {
+    if (!teste) {
       const userChat = await tableChat.create(req.body);
-      await userChat.addUser(otherUserId);
       await userChat.addUser(myUserId.id);
-      console.log(findChat)
+      await userChat.addUser(otherUserId);
       return res.json(userChat);
     }
-
-    return res.json(findChat);
+    const chatExist = await tableChat.findByPk(teste);
+    return res.json(chatExist);
   }
   return res.json({ message: "UserId not exists" });
 };
