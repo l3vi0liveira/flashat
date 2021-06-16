@@ -4,6 +4,7 @@ const crypto = require("crypto");
 const { createHash, compare } = require("../utils/crypto");
 const tableUser = models.User;
 const jwt = require("jsonwebtoken");
+const { table } = require("console");
 
 exports.create = async (req, res) => {
   const { phone, name, password, email } = req.body;
@@ -45,7 +46,7 @@ exports.login = async (req, res) => {
       expiresIn: 3600,
     }
   );
-  return res.json({ message:  "Successfully logged:", token, "Login": verifyPhone.id });;
+  return res.json({ token, Login: verifyPhone });
 };
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -66,17 +67,31 @@ exports.modify = async (req, res) => {
   const getToken = req.headers.authorization.split(" ")[1];
   const myUserId = jwt.decode(getToken);
 
-  const { name, password, email } = req.body;
+  await tableUser.update(req.body, { where: { id: myUserId.id } });
 
-  const passwordHash = createHash(password);
+  const modifyPassword = await tableUser.findByPk(myUserId.id);
+  res.json(modifyPassword);
+};
 
-  await tableUser.update(
-    { name, password: passwordHash, email },
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+
+exports.modifyPassword = async (req, res) => {
+  const getToken = req.headers.authorization.split(" ")[1];
+  const myUserId = jwt.decode(getToken);
+  const myUserPassword = await tableUser.findByPk(myUserId.id);
+
+  const { currentPassword, newPassword } = req.body;
+
+  const newPasswordHash = createHash(newPassword);
+
+  if (!compare(myUserPassword.password, currentPassword)) {
+    return res.json({message:"Password entered does not match current"});
+  }
+  const updatePassword = await tableUser.update(
+    { password: newPasswordHash },
     { where: { id: myUserId.id } }
   );
-
-  const modifyUser = await tableUser.findByPk(myUserId.id);
-  res.json(modifyUser);
+  return res.json({message:"Password changed successfully"});
 };
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////

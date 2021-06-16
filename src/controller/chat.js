@@ -10,7 +10,6 @@ exports.createchat = async (req, res) => {
   const getToken = req.headers.authorization.split(" ")[1];
   const myUserId = jwt.decode(getToken);
   const otherUserId = req.body.userId;
-  const ids = [myUserId.id, otherUserId];
 
   const findUser = await tableUser.findByPk(otherUserId);
 

@@ -9,5 +9,6 @@ router.post("/user/create",controllerUser.create);
 router.post("/user/login",controllerUser.login);
 router.get("/user/showUser",controllerUser.show)
 router.put("/user/modifyUser",controllerUser.modify)
+router.put("/user/modifyPassword",controllerUser.modifyPassword)
 
 module.exports = router;
