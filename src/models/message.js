@@ -7,22 +7,7 @@ module.exports = (sequelize, DataTypes) => {
         autoIncrement: true,
         primaryKey: true,
       },
-      chatId: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
-        references: {
-          key: "id",
-          model: "chat",
-        },
-      },
-      userId: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
-        references: {
-          key: "id",
-          model: "users",
-        },
-      },
+    
       text: DataTypes.TEXT,
       createdAt: DataTypes.DATE,
       updatedAt: DataTypes.DATE,

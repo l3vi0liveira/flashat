@@ -7,14 +7,7 @@ module.exports = (sequelize, DataTypes) => {
         autoIncrement: true,
         primaryKey: true,
       },
-      messageId: {
-        type: DataTypes.INTEGER,
-        allowNull: true,
-        references: {
-          key: "id",
-          model: "message",
-        },
-      },
+
       originalname: DataTypes.STRING,
       mimetype: DataTypes.STRING,
       filename: DataTypes.STRING,
@@ -37,6 +30,10 @@ module.exports = (sequelize, DataTypes) => {
           foreignKey:"messageId",
           as:"file",
       });
+      File.belongsTo(models.User,{
+        foreignKey:"userId",
+        as:"avatar",
+    });
    };
   return File;
 };

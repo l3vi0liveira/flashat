@@ -16,6 +16,14 @@ module.exports = {
           model: "message",
         },
       },
+      userId: {
+        type: Sequelize.INTEGER,
+        allowNull: true,
+        references: {
+          key: "id",
+          model: "users",
+        },
+      },
       originalname: Sequelize.STRING,
       mimetype: Sequelize.STRING,
       filename: Sequelize.STRING,

@@ -6,8 +6,8 @@ const models = require("../models");
 const tableUser = models.User;
 
 exports.mycontacts = async (req, res) => {
-  const getToken = req.headers.authorization.split(" ")[1];
-  const myUserId = jwt.decode(getToken);
+  const myUserId = req.myUserId;
+
   const findUsers = await tableUser.findAll({
     where: {
       id: {

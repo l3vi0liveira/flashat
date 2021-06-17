@@ -7,7 +7,11 @@ exports.verifyToken = async (req, res, next) => {
       return res.status(401).json({
         message: "You need to be logged in to perform this operation",
       });
+
+    const myUserId = jwt.decode(token);
+    
+    req.myUserId = myUserId;
+
     return next();
   });
 };
-

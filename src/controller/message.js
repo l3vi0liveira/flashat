@@ -7,11 +7,13 @@ const tableUser = models.User;
 const tableFile = models.File;
 
 exports.sendMessage = async (req, res) => {
-  const getToken = req.headers.authorization.split(" ")[1];
-  const myUserId = jwt.decode(getToken);
+  const myUserId = req.myUserId;
+
   const chatID = req.params.chatId;
+
+
   const sendMessage = await tableMessage.create({
-    chatId: chatID,
+    chatId: 1,
     userId: myUserId.id,
     text: req.body.text,
   });
@@ -22,6 +24,7 @@ exports.sendMessage = async (req, res) => {
       ...req.file,
     });
   }
+
   const result = await tableMessage.findOne({
     where: { id: sendMessage.id },
     include: {
@@ -29,11 +32,14 @@ exports.sendMessage = async (req, res) => {
       as: "file",
     },
   });
+  
+
   return res.json(result);
 };
 
 exports.showMessage = async (req, res) => {
   const chatId = req.params.chatId;
+
   const showMessage = await tableMessage.findAll({
     where: { chatId: chatId },
     include: {
@@ -46,5 +52,6 @@ exports.showMessage = async (req, res) => {
       as: "file",
     },
   });
+
   return res.json(showMessage);
 };
