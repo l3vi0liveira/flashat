@@ -62,6 +62,20 @@ exports.createchat = async (req, res) => {
 
     return res.json(chatExist);
   }
-  
+
   return res.json({ message: "UserId not exists" });
+};
+
+exports.showchats = async (req, res) => {
+  const myUserId = req.myUserId;
+  const listChats = await tableChat.findAll({
+    include: [
+      {
+        model: tableUser,
+        as: "users",
+        where: { id: myUserId.id },
+      },
+    ],
+  });
+  return res.json(listChats);
 };
