@@ -59,7 +59,7 @@ exports.createchat = async (req, res) => {
       const userChat = await tableChat.create(req.body);
       await userChat.addUser(myUserId.id);
       await userChat.addUser(otherUserId);
-      return res.json(userChat);
+      return res.json({ chat: chatExist, otherUser: findUser });
     }
 
     const chatExist = await tableChat.findByPk(teste);

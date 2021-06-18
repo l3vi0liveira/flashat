@@ -3,6 +3,7 @@ const dotenv = require("dotenv");
 const bodyParser = require("body-parser")
 const path = require("path");
 const cors = require("cors");
+var replaceall = require("replaceall");
 
 const routes = require("./routes");
 

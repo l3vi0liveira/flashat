@@ -28,6 +28,13 @@ exports.sendMessage = async (req, res) => {
       text: req.body.text,
     });
 
+    const lastMessage = sendMessage.id
+    console.log(lastMessage)
+    console.log(chatID)
+
+     const newlastMessage = await tableChat.update({lastMessage}, { where: { id: chatID } });
+    console.log(newlastMessage)
+
     if (req.file) {
       await tableFile.create({
         messageId: sendMessage.id,
@@ -45,7 +52,7 @@ exports.sendMessage = async (req, res) => {
 
     return res.json(result);
   }
-  
+
   return res.json({ message: "You don't belong in this chat" });
 };
 

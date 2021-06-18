@@ -37,15 +37,15 @@ exports.create = async (req, res) => {
       ...req.file,
     });
 
-    token = jwt.sign(
-      { id: include.id, phone: include.phone },
-      process.env.SECRET,
-      {
-        expiresIn: 3600,
-      }
-    );
+  token = jwt.sign(
+    { id: include.id, phone: include.phone },
+    process.env.SECRET,
+    {
+      expiresIn: 3600,
+    }
+  );
 
-  return res.json({user:include, token});
+  return res.json({ user: include, token });
 };
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -97,7 +97,7 @@ exports.modify = async (req, res) => {
 
   await tableUser.update(req.body, { where: { id: myUserId.id } });
   if (req.file) {
-    await tableFile.update(req.file,{ where: { userId: myUserId.id } });
+    await tableFile.update(req.file, { where: { userId: myUserId.id } });
   }
 
   const modify = await tableUser.findOne({
