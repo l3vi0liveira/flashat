@@ -53,7 +53,7 @@ exports.showMessage = async (req, res) => {
   const chatId = req.params.chatId;
 
   const showMessage = await tableMessage.findAll({
-    order: [["createdAt", "DESC"]],
+    order: [["createdAt", "ASC"]],
     where: { chatId: chatId },
     include: {
       model: tableUser,
