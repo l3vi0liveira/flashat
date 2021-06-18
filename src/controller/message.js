@@ -28,12 +28,9 @@ exports.sendMessage = async (req, res) => {
       text: req.body.text,
     });
 
-    const lastMessage = sendMessage.id
-    console.log(lastMessage)
-    console.log(chatID)
-
-     const newlastMessage = await tableChat.update({lastMessage}, { where: { id: chatID } });
-    console.log(newlastMessage)
+    const lastMessage = sendMessage.id;
+    
+    await tableChat.update({ lastMessage }, { where: { id: chatID } });
 
     if (req.file) {
       await tableFile.create({

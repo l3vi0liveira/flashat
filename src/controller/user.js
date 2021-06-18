@@ -2,6 +2,7 @@ const models = require("../models");
 const sequelize = require("sequelize");
 const crypto = require("crypto");
 const jwt = require("jsonwebtoken");
+const validator = require("validator")
 
 const { createHash, compare } = require("../utils/crypto");
 
@@ -25,7 +26,8 @@ exports.create = async (req, res) => {
   }
 
   const passwordHash = createHash(req.body.password);
-
+const isEmail = validator.isEmail(req.body.email)
+if(isEmail){
   const include = await tableUser.create({
     ...req.body,
     password: passwordHash,
@@ -46,6 +48,8 @@ exports.create = async (req, res) => {
   );
 
   return res.json({ user: include, token });
+}
+return res.json({message:"Enter a valid email field"})
 };
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////

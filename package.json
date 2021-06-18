@@ -25,7 +25,8 @@
     "pg-hstore": "^2.3.4",
     "replaceall": "^0.1.6",
     "sequelize": "^6.6.2",
-    "sqlite3": "^5.0.2"
+    "sqlite3": "^5.0.2",
+    "validator": "^13.6.0"
   },
   "devDependencies": {
     "sequelize-cli": "^6.2.0"
