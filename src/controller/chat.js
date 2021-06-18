@@ -58,9 +58,11 @@ exports.createchat = async (req, res) => {
       return res.json(userChat);
     }
 
+
     const chatExist = await tableChat.findByPk(teste);
 
-    return res.json(chatExist);
+
+    return res.json({chat:chatExist, otherUser:findUser});
   }
 
   return res.json({ message: "UserId not exists" });
@@ -76,6 +78,11 @@ exports.showchats = async (req, res) => {
         where: { id: myUserId.id },
       },
     ],
+    include:[],
+    
   });
+
+  // const lastMessage = listChats[0].message.length - 1
+  // console.log(listChats[0].message)
   return res.json(listChats);
 };
