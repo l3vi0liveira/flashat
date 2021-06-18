@@ -37,7 +37,15 @@ exports.create = async (req, res) => {
       ...req.file,
     });
 
-  return res.json(include);
+    token = jwt.sign(
+      { id: include.id, phone: include.phone },
+      process.env.SECRET,
+      {
+        expiresIn: 3600,
+      }
+    );
+
+  return res.json({user:include, token});
 };
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////

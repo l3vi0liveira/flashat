@@ -1,6 +1,7 @@
 const models = require("../models");
 const tableChat = models.Chat;
 const tableUser = models.User;
+const tableMessage = models.Message;
 const { Op } = require("sequelize");
 const jwt = require("jsonwebtoken");
 
@@ -8,7 +9,10 @@ exports.createchat = async (req, res) => {
   const myUserId = req.myUserId;
   const otherUserId = req.body.userId;
 
-  const findUser = await tableUser.findByPk(otherUserId);
+  const findUser = await tableUser.findOne({
+    where: { id: otherUserId },
+    attributes: { exclude: "password" },
+  });
 
   if (otherUserId == myUserId.id) {
     return res.json({
@@ -58,11 +62,9 @@ exports.createchat = async (req, res) => {
       return res.json(userChat);
     }
 
-
     const chatExist = await tableChat.findByPk(teste);
 
-
-    return res.json({chat:chatExist, otherUser:findUser});
+    return res.json({ chat: chatExist, otherUser: findUser });
   }
 
   return res.json({ message: "UserId not exists" });
@@ -78,11 +80,14 @@ exports.showchats = async (req, res) => {
         where: { id: myUserId.id },
       },
     ],
-    include:[],
-    
+    include: [
+      {
+        model: tableMessage,
+        as: "message",
+        required: true,
+      },
+    ],
   });
 
-  // const lastMessage = listChats[0].message.length - 1
-  // console.log(listChats[0].message)
   return res.json(listChats);
 };

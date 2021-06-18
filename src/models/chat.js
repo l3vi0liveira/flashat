@@ -20,9 +20,13 @@ module.exports = (sequelize, DataTypes) => {
       as: "users",
       through: "user_chat",
     });
-    Chat.hasMany(models.Message,{
-      foreignKey:"chatId",
-      as:"message",
+    Chat.hasMany(models.Message, {
+      foreignKey: "chatId",
+      as: "message",
+    });
+    Chat.belongsTo(models.Message, {
+      foreignKey: "lastMessage",
+      as: "messageChat",
     });
   };
   return Chat;
