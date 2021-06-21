@@ -80,14 +80,13 @@ exports.showchats = async (req, res) => {
         where: { id: myUserId.id },
       },
     ],
-    include: [
-      {
-        model: tableMessage,
-        as: "message",
-        required: true,
-      },
-    ],
   });
-
-  return res.json(listChats);
+  const chatsIds = listChats.map((item) => item.id);
+  const response = await tableChat.findAll({
+    where: {
+      id: { [Op.in]: chatsIds },
+    },
+    include: ["users"],
+  });
+  return res.json(response);
 };
