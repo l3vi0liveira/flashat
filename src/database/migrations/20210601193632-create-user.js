@@ -8,7 +8,7 @@ module.exports = {
         autoIncrement: true,
         primaryKey: true,
       },
-      phone:Sequelize.NUMERIC,
+      phone:Sequelize.STRING,
       name: Sequelize.STRING,
       password:Sequelize.STRING,
       email: Sequelize.STRING,

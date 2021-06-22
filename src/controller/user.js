@@ -2,7 +2,7 @@ const models = require("../models");
 const sequelize = require("sequelize");
 const crypto = require("crypto");
 const jwt = require("jsonwebtoken");
-const validator = require("validator")
+const validator = require("validator");
 
 const { createHash, compare } = require("../utils/crypto");
 
@@ -26,30 +26,30 @@ exports.create = async (req, res) => {
   }
 
   const passwordHash = createHash(req.body.password);
-const isEmail = validator.isEmail(req.body.email)
-if(isEmail){
-  const include = await tableUser.create({
-    ...req.body,
-    password: passwordHash,
-  });
-
-  if (req.file)
-    await tableFile.create({
-      userId: include.id,
-      ...req.file,
+  const isEmail = validator.isEmail(req.body.email);
+  if (isEmail) {
+    const include = await tableUser.create({
+      ...req.body,
+      password: passwordHash,
     });
 
-  token = jwt.sign(
-    { id: include.id, phone: include.phone },
-    process.env.SECRET,
-    {
-      expiresIn: 3600,
-    }
-  );
+    if (req.file)
+      await tableFile.create({
+        userId: include.id,
+        ...req.file,
+      });
 
-  return res.json({ user: include, token });
-}
-return res.json({message:"Enter a valid email field"})
+    token = jwt.sign(
+      { id: include.id, phone: include.phone },
+      process.env.SECRET,
+      {
+        expiresIn: 3600,
+      }
+    );
+
+    return res.json({ user: include, token });
+  }
+  return res.json({ message: "Enter a valid email field" });
 };
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////

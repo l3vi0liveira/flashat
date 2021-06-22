@@ -29,7 +29,7 @@ exports.sendMessage = async (req, res) => {
     });
 
     const lastMessage = sendMessage.id;
-    
+
     await tableChat.update({ lastMessage }, { where: { id: chatID } });
 
     if (req.file) {
@@ -58,19 +58,33 @@ exports.sendMessage = async (req, res) => {
 exports.showMessage = async (req, res) => {
   const chatId = req.params.chatId;
 
-  const showMessage = await tableMessage.findAll({
-    order: [["createdAt", "ASC"]],
-    where: { chatId: chatId },
+  const myUserId = req.myUserId;
+
+  const findChatUser = await tableChat.findOne({
+    where: { id: chatId },
     include: {
       model: tableUser,
       as: "users",
-      attributes: { exclude: ["password"] },
-    },
-    include: {
-      model: tableFile,
-      as: "file",
+      where: { id: myUserId.id },
     },
   });
 
-  return res.json(showMessage);
+  if (findChatUser) {
+    const showMessage = await tableMessage.findAll({
+      order: [["createdAt", "ASC"]],
+      where: { chatId: chatId },
+      include: {
+        model: tableUser,
+        as: "users",
+        attributes: { exclude: ["password"] },
+      },
+      include: {
+        model: tableFile,
+        as: "file",
+      },
+    });
+
+    return res.json(showMessage);
+  }
+  return res.json({ message: "You don't belong in this chat" });
 };

@@ -85,6 +85,7 @@ exports.showchats = async (req, res) => {
   const response = await tableChat.findAll({
     where: {
       id: { [Op.in]: chatsIds },
+      lastMessage: { [Op.ne]: null },
     },
     include: ["users"],
   });
