@@ -6,6 +6,7 @@ const tableMessage = models.Message;
 const tableUser = models.User;
 const tableFile = models.File;
 const tableChat = models.Chat;
+const tableEvents = models.Events;
 
 exports.sendMessage = async (req, res) => {
   const myUserId = req.myUserId;
@@ -26,6 +27,10 @@ exports.sendMessage = async (req, res) => {
       chatId: chatID,
       userId: myUserId.id,
       text: req.body.text,
+    });
+
+    await tableEvents.create({
+      event: `Usuário de id : ${myUserId.id} Enviou a mensagem : ${sendMessage.id} no chat : ${chatID}`,
     });
 
     const lastMessage = sendMessage.id;
@@ -82,6 +87,11 @@ exports.showMessage = async (req, res) => {
         model: tableFile,
         as: "file",
       },
+    });
+
+    await tableEvents.create({
+      userId: myUserId.id,
+      event: `Usuário de id : ${myUserId.id} visualizou as mensagens do chat : ${chatId}`,
     });
 
     return res.json(showMessage);

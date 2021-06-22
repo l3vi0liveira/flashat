@@ -12,8 +12,6 @@ module.exports = (sequelize, DataTypes) => {
       phone: {
         type: DataTypes.STRING,
         validate: {
-          min: 8 ,
-          max: 13,
           isPhone(phone) {
             if (!isNaN(phone)) {
               console.log("Deu bom");
@@ -48,8 +46,10 @@ module.exports = (sequelize, DataTypes) => {
       foreignKey: "userId",
       as: "file",
     });
+    User.hasMany(models.Events, {
+      foreignKey: "userId",
+      as: "events",
+    });
   };
   return User;
 };
-
-

@@ -7,7 +7,7 @@ module.exports = {
     return queryInterface.bulkInsert("users", [
       {
 
-        phone: 14997895586,
+        phone: "14997895586",
         name: "Levi",
         password: createHash("31031999"),
         email: "levi.carvalho99@gmail.com",
@@ -16,7 +16,7 @@ module.exports = {
       },
       {
 
-        phone: 14997895585,
+        phone: "14997895585",
         name: "Cauan",
         password: createHash("010203"),
         email: "cauan.suzuki99@gmail.com",
@@ -25,7 +25,7 @@ module.exports = {
       },
       {
 
-        phone: 14997895584,
+        phone: "14997895584",
         name: "Daniel",
         password: createHash("123456"),
         email: "dani.barbosa98@gmail.com",

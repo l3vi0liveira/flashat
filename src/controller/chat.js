@@ -1,7 +1,7 @@
 const models = require("../models");
 const tableChat = models.Chat;
 const tableUser = models.User;
-const tableMessage = models.Message;
+const tableEvents = models.Events;
 const { Op } = require("sequelize");
 const jwt = require("jsonwebtoken");
 
@@ -59,10 +59,19 @@ exports.createchat = async (req, res) => {
       const userChat = await tableChat.create(req.body);
       await userChat.addUser(myUserId.id);
       await userChat.addUser(otherUserId);
-      return res.json({ chat: chatExist, otherUser: findUser });
+
+      await tableEvents.create({
+        event: `Um chat foi criado entre os usuários : ${myUserId.id} e ${otherUserId}`,
+      });
+
+      return res.json({ chat: userChat, otherUser: findUser });
     }
 
     const chatExist = await tableChat.findByPk(teste);
+
+    await tableEvents.create({
+      event: `Um chat foi encontrado entre os usuários : ${myUserId.id} e ${otherUserId}`,
+    });
 
     return res.json({ chat: chatExist, otherUser: findUser });
   }
@@ -89,5 +98,11 @@ exports.showchats = async (req, res) => {
     },
     include: ["users"],
   });
+
+  await tableEvents.create({
+    userId: myUserId.id,
+    event: `Usuário de Id : ${myUserId.id} visualizou seus chats existentes`,
+  });
+
   return res.json(response);
 };

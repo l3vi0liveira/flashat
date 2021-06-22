@@ -8,7 +8,7 @@ const { createHash, compare } = require("../utils/crypto");
 
 const tableUser = models.User;
 const tableFile = models.File;
-const tableMessage = models.Message;
+const tableEvents = models.Events;
 
 exports.create = async (req, res) => {
   const { phone, name, password, email } = req.body;
@@ -31,6 +31,10 @@ exports.create = async (req, res) => {
     const include = await tableUser.create({
       ...req.body,
       password: passwordHash,
+    });
+    await tableEvents.create({
+      userId: include.id,
+      event: `Usuário de id : ${include.id} Criado com o telefone: ${include.phone}`,
     });
 
     if (req.file)
@@ -77,6 +81,11 @@ exports.login = async (req, res) => {
     }
   );
 
+  await tableEvents.create({
+    userId: verifyPhone.id,
+    event: `Usuário de id : ${verifyPhone.id} Logou na plataforma com o telefone: ${verifyPhone.phone}`,
+  });
+
   return res.json({ token, user: verifyPhone });
 };
 
@@ -91,6 +100,11 @@ exports.show = async (req, res) => {
     include: ["file"],
   });
 
+  await tableEvents.create({
+    userId: myUserId.id,
+    event: `Usuário de id : ${myUserId.id} Visualizou seu próprio perfil`,
+  });
+
   return res.json(showUser);
 };
 
@@ -100,8 +114,32 @@ exports.modify = async (req, res) => {
   const myUserId = req.myUserId;
 
   await tableUser.update(req.body, { where: { id: myUserId.id } });
+
+  await tableEvents.create({
+    userId: myUserId.id,
+    event: `Usuário de id : ${myUserId.id} Fez alterações em seus dados`,
+  });
+
   if (req.file) {
-    await tableFile.update(req.file, { where: { userId: myUserId.id } });
+    const findFile = await tableFile.findOne({
+      where: { userId: myUserId.id },
+    });
+
+    if (findFile) {
+      await tableFile.update(req.file, { where: { userId: myUserId.id } });
+
+      await tableEvents.create({
+        userId: myUserId.id,
+        event: `Usuário de id : ${myUserId.id} Alterou sua foto de perfil`,
+      });
+    }
+
+    await tableFile.create({ userId: myUserId.id, ...req.file });
+
+    await tableEvents.create({
+      userId: myUserId.id,
+      event: `Usuário de id : ${myUserId.id} Adicionou uma nova foto ao seu perfil`,
+    });
   }
 
   const modify = await tableUser.findOne({
@@ -131,6 +169,11 @@ exports.modifyPassword = async (req, res) => {
     { password: newPasswordHash },
     { where: { id: myUserId.id } }
   );
+
+  await tableEvents.create({
+    userId: myUserId.id,
+    event: `Usuário de id : ${myUserId.id} Alterou sua senha`,
+  });
 
   return res.json({ message: "Password changed successfully" });
 };
