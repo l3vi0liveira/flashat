@@ -2,7 +2,7 @@
 
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    await queryInterface.createTable("events", { 
+    await queryInterface.createTable("events", {
       id: {
         type: Sequelize.INTEGER,
         autoIncrement: true,
@@ -14,6 +14,14 @@ module.exports = {
         references: {
           key: "id",
           model: "users",
+        },
+      },
+      chatId: {
+        type: Sequelize.INTEGER,
+        allowNull: true,
+        references: {
+          key: "id",
+          model: "chat",
         },
       },
       event: Sequelize.TEXT,
