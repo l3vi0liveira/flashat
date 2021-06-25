@@ -24,12 +24,12 @@ module.exports = (sequelize, DataTypes) => {
       foreignKey: "chatId",
       as: "message",
     });
-    Chat.belongsTo(models.Message, {
-      foreignKey: "lastMessage",
-      as: "messageChat",
+    Chat.hasOne(models.Message, {
+      foreignKey: "lastMessageId",
+      as: "lastMessage",
     });
     Chat.hasMany(models.Events, {
-      foreignKey: "userId",
+      foreignKey: "chatId",
       as: "events",
     });
   };

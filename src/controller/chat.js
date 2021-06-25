@@ -92,9 +92,10 @@ exports.showchats = async (req, res) => {
       id: { [Op.in]: chatsIds },
       lastMessage: { [Op.ne]: null },
     },
-    include: ["users"],
+    include: ["users", "lastMessage"],
   });
 
+  console.log(response);
   create_events("User", "Show_Chats", myUserId.id);
 
   return res.json(response);

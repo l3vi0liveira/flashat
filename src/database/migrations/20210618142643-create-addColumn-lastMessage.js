@@ -2,7 +2,7 @@
 
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    await queryInterface.addColumn("chat", "lastMessage", {
+    await queryInterface.addColumn("chat", "lastMessageId", {
       type: Sequelize.INTEGER,
       allowNull: true,
       references: {

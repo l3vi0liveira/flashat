@@ -29,9 +29,9 @@ module.exports = (sequelize, DataTypes) => {
       foreignKey: "messageId",
       as: "file",
     });
-    Message.hasOne(models.Chat, {
-      foreignKey: "lastMessage",
-      as: "messageChat",
+    Message.belongsTo(models.Chat, {
+      foreignKey: "lastMessageId",
+      as: "lastMessage",
     });
     Message.hasOne(models.Events, {
       foreignKey: "messageId",
