@@ -1,12 +1,12 @@
+const models = require("../models");
 const jwt = require("jsonwebtoken");
 
-const models = require("../models");
+const { create_events } = require("../utils/events");
 
 const tableMessage = models.Message;
 const tableUser = models.User;
 const tableFile = models.File;
 const tableChat = models.Chat;
-const tableEvents = models.Events;
 
 exports.sendMessage = async (req, res) => {
   const myUserId = req.myUserId;
@@ -29,9 +29,11 @@ exports.sendMessage = async (req, res) => {
       text: req.body.text,
     });
 
-    await tableEvents.create({
-      event: `Usuário de id : ${myUserId.id} Enviou a mensagem : ${sendMessage.id} no chat : ${chatID}`,
-    });
+    create_events(
+      "Message",
+      "Create",
+      `${myUserId.id}-${chatID}-${sendMessage.id}`
+    );
 
     const lastMessage = sendMessage.id;
 
@@ -89,10 +91,7 @@ exports.showMessage = async (req, res) => {
       },
     });
 
-    await tableEvents.create({
-      userId: myUserId.id,
-      event: `Usuário de id : ${myUserId.id} visualizou as mensagens do chat : ${chatId}`,
-    });
+    create_events("Message", "Viewed", `${myUserId.id}-${findChatUser.id}`);
 
     return res.json(showMessage);
   }

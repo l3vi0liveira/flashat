@@ -7,7 +7,7 @@ module.exports = (sequelize, DataTypes) => {
         autoIncrement: true,
         primaryKey: true,
       },
-    
+
       text: DataTypes.TEXT,
       createdAt: DataTypes.DATE,
       updatedAt: DataTypes.DATE,
@@ -17,22 +17,26 @@ module.exports = (sequelize, DataTypes) => {
     }
   );
   Message.associate = (models) => {
-      Message.belongsTo(models.Chat,{
-          foreignKey:"chatId",
-          as:"chat"
-      });
-      Message.belongsTo(models.User,{
-          foreignKey:"userId",
-          as:"users"
-      });
-      Message.hasOne(models.File,{
-        foreignKey:"messageId",
-        as:"file",
-      });
-      Message.hasOne(models.Chat,{
-        foreignKey:"lastMessage",
-        as:"messageChat",
-      });
+    Message.belongsTo(models.Chat, {
+      foreignKey: "chatId",
+      as: "chat",
+    });
+    Message.belongsTo(models.User, {
+      foreignKey: "userId",
+      as: "users",
+    });
+    Message.hasOne(models.File, {
+      foreignKey: "messageId",
+      as: "file",
+    });
+    Message.hasOne(models.Chat, {
+      foreignKey: "lastMessage",
+      as: "messageChat",
+    });
+    Message.hasOne(models.Events, {
+      foreignKey: "messageId",
+      as: "events",
+    });
   };
   return Message;
 };

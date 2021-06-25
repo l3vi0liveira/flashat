@@ -1,14 +1,13 @@
 const models = require("../models");
 const sequelize = require("sequelize");
-const crypto = require("crypto");
 const jwt = require("jsonwebtoken");
 const validator = require("validator");
 
 const { createHash, compare } = require("../utils/crypto");
+const { create_events } = require("../utils/events");
 
 const tableUser = models.User;
 const tableFile = models.File;
-const tableEvents = models.Events;
 
 exports.create = async (req, res) => {
   const { phone, name, password, email } = req.body;
@@ -32,10 +31,8 @@ exports.create = async (req, res) => {
       ...req.body,
       password: passwordHash,
     });
-    await tableEvents.create({
-      userId: include.id,
-      event: `Usuário de id : ${include.id} Criado com o telefone: ${include.phone}`,
-    });
+
+    create_events("User", "Create", include.id);
 
     if (req.file)
       await tableFile.create({
@@ -81,10 +78,7 @@ exports.login = async (req, res) => {
     }
   );
 
-  await tableEvents.create({
-    userId: verifyPhone.id,
-    event: `Usuário de id : ${verifyPhone.id} Logou na plataforma com o telefone: ${verifyPhone.phone}`,
-  });
+  create_events("User", "Login", verifyPhone.id);
 
   return res.json({ token, user: verifyPhone });
 };
@@ -100,10 +94,7 @@ exports.show = async (req, res) => {
     include: ["file"],
   });
 
-  await tableEvents.create({
-    userId: myUserId.id,
-    event: `Usuário de id : ${myUserId.id} Visualizou seu próprio perfil`,
-  });
+  create_events("User", "Show", myUserId.id);
 
   return res.json(showUser);
 };
@@ -115,10 +106,7 @@ exports.modify = async (req, res) => {
 
   await tableUser.update(req.body, { where: { id: myUserId.id } });
 
-  await tableEvents.create({
-    userId: myUserId.id,
-    event: `Usuário de id : ${myUserId.id} Fez alterações em seus dados`,
-  });
+  create_events("User", "Update_Data", myUserId.id);
 
   if (req.file) {
     const findFile = await tableFile.findOne({
@@ -128,18 +116,12 @@ exports.modify = async (req, res) => {
     if (findFile) {
       await tableFile.update(req.file, { where: { userId: myUserId.id } });
 
-      await tableEvents.create({
-        userId: myUserId.id,
-        event: `Usuário de id : ${myUserId.id} Alterou sua foto de perfil`,
-      });
+      create_events("User", "Uptate_Photo", myUserId.id);
     }
 
     await tableFile.create({ userId: myUserId.id, ...req.file });
 
-    await tableEvents.create({
-      userId: myUserId.id,
-      event: `Usuário de id : ${myUserId.id} Adicionou uma nova foto ao seu perfil`,
-    });
+    create_events("User", "Create_Photo", myUserId.id);
   }
 
   const modify = await tableUser.findOne({
@@ -170,10 +152,7 @@ exports.modifyPassword = async (req, res) => {
     { where: { id: myUserId.id } }
   );
 
-  await tableEvents.create({
-    userId: myUserId.id,
-    event: `Usuário de id : ${myUserId.id} Alterou sua senha`,
-  });
+  create_events("User", "Uptate_Password", myUserId.id);
 
   return res.json({ message: "Password changed successfully" });
 };

@@ -24,6 +24,10 @@ module.exports = (sequelize, DataTypes) => {
       foreignKey: "chatId",
       as: "chat",
     });
+    Events.belongsTo(models.Events, {
+      foreignKey: "messageId",
+      as: "events",
+    });
   };
   return Events;
 };

@@ -14,9 +14,9 @@ module.exports = (sequelize, DataTypes) => {
         validate: {
           isPhone(phone) {
             if (!isNaN(phone)) {
-              console.log("Deu bom");
+              console.log("Valid Phone");
             } else {
-              throw new Error("Deu ruim");
+              throw new Error("Invalid Phone");
             }
           },
         },

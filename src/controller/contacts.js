@@ -1,10 +1,10 @@
-const jwt = require("jsonwebtoken");
-const { Op } = require("sequelize");
-
 const models = require("../models");
 
+const jwt = require("jsonwebtoken");
+const { Op } = require("sequelize");
+const { create_events } = require("../utils/events");
+
 const tableUser = models.User;
-const tableEvents = models.Events;
 
 exports.mycontacts = async (req, res) => {
   const myUserId = req.myUserId;
@@ -18,10 +18,7 @@ exports.mycontacts = async (req, res) => {
     attributes: { exclude: ["password", "createdAt", "updatedAt"] },
   });
 
-  await tableEvents.create({
-    userId: myUserId.id,
-    event: `Usuário de id : ${myUserId.id} Visualizou seus contatos`,
-  });
+  create_events("Contacts", "Show", myUserId.id);
 
   return res.json(findUsers);
 };
