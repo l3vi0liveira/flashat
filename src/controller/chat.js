@@ -2,6 +2,7 @@ const models = require("../models");
 
 const tableChat = models.Chat;
 const tableUser = models.User;
+const tableMessage = models.Message;
 
 const { Op } = require("sequelize");
 const jwt = require("jsonwebtoken");
@@ -77,26 +78,48 @@ exports.createchat = async (req, res) => {
 
 exports.showchats = async (req, res) => {
   const myUserId = req.myUserId;
-  const listChats = await tableChat.findAll({
-    include: [
-      {
-        model: tableUser,
-        as: "users",
-        where: { id: myUserId.id },
-      },
-    ],
-  });
-  const chatsIds = listChats.map((item) => item.id);
-  const response = await tableChat.findAll({
-    where: {
-      id: { [Op.in]: chatsIds },
-      lastMessage: { [Op.ne]: null },
-    },
-    include: ["users", "lastMessage"],
-  });
 
-  console.log(response);
-  create_events("User", "Show_Chats", myUserId.id);
+  const response = await models.sequelize.query(
+    `select * from chat c
+    inner join message m on c."lastMessageId" = m.id
+  left join file f on f."messageId" = m.id
+    inner join user_chat uc on uc."chatId" = c.id 
+  inner join users u on uc."userId" = u.id
+    where uc."chatId" in 
+    (
+        select c2.id from chat c2 
+            inner join user_chat uc2 on uc2."chatId" = c2.id 
+            where uc2."userId" = :userId
+    );`,
+    {
+      replacements: { userId: myUserId.id },
+      type: models.sequelize.QueryTypes.SELECT,
+    }
+  );
 
-  return res.json(response);
+  const response2 = response.reduce((acc, cur) => {
+    const payload = {
+      chatId: cur.chatId,
+      nome: cur.name,
+      userId: cur.userId,
+      lastMessage: cur.text,
+    };
+
+    if (acc[cur.chatId]) {
+      return {
+        ...acc,
+        [cur.chatId]: {
+          ...acc[cur.chatId],
+          otherUser: payload,
+        },
+      };
+    }
+
+    return {
+      ...acc,
+      [cur.chatId]: payload,
+    };
+  }, {});
+
+  return res.json(Object.values(response2));
 };
