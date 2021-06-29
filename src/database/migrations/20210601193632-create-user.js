@@ -8,12 +8,13 @@ module.exports = {
         autoIncrement: true,
         primaryKey: true,
       },
-      phone:Sequelize.STRING,
+      phone: Sequelize.STRING,
       name: Sequelize.STRING,
-      password:Sequelize.STRING,
+      password: Sequelize.STRING,
       email: Sequelize.STRING,
+      attempts: Sequelize.INTEGER,
       createdAt: Sequelize.DATE,
-      updatedAt:Sequelize.DATE,
+      updatedAt: Sequelize.DATE,
     });
   },
 
@@ -21,4 +22,3 @@ module.exports = {
     await queryInterface.dropTable("users");
   },
 };
-
