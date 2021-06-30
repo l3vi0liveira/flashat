@@ -7,6 +7,7 @@ exports.create_events = async (executed_where, event, id) => {
     const myUserId = parseInt(id.split("-")[0]);
     const chatId = parseInt(id.split("-")[1]);
     if (id.split("-").length === 2) {
+      console.log("aaaa");
       await tableEvents.create({
         chatId,
         userId: myUserId,

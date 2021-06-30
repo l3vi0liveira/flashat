@@ -7,6 +7,7 @@ const crypto = require("crypto");
 const { createHash, compare } = require("../utils/crypto");
 const { create_events } = require("../utils/events");
 const { sendEmail } = require("../utils/sendEmail");
+const { response } = require("express");
 
 const tableUser = models.User;
 const tableFile = models.File;
@@ -15,54 +16,78 @@ function gerarSalt() {
   return crypto.randomBytes(Math.ceil(9)).toString("hex").slice(0, 16);
 }
 
-function verificaSeCamposEstaoPreenchidos() {}
-
-exports.create = async (req, res) => {
-  const verify = ({ phone, name, password, email } = req.body);
+async function verificaSeCamposEstaoPreenchidos(verify) {
+  const { phone, name, password, email } = verify;
 
   if (!phone || !name || !password || !email) {
-    create_events("User", "Create_Error");
+    await create_events("User", "Create_Error");
 
-    return res.json({ message: "All fields are mandatory" });
+    throw { message: "All fields are mandatory", error: true };
   }
+  return verify;
+}
 
+async function verificaSeExisteTelefone(user) {
   const verifyPhone = await tableUser.findOne({
-    where: { phone },
+    where: { phone: user.phone },
   });
 
   if (verifyPhone) {
-    create_events("User", "Create_Error");
-    return res.json({ message: "Phone already registerd" });
-  }
+    await create_events("User", "Create_Error");
 
-  const passwordHash = createHash(req.body.password);
-  const isEmail = validator.isEmail(req.body.email);
-  if (isEmail) {
-    const include = await tableUser.create({
-      ...req.body,
-      password: passwordHash,
+    throw { message: "Phone already registerd", error: true };
+  }
+  return;
+}
+
+async function criaUser_Photo_GeraToken(user, password, file) {
+  const include = await tableUser.create({
+    ...user,
+    password,
+  });
+
+  create_events("User", "Create", include.id);
+
+  if (file)
+    await tableFile.create({
+      userId: include.id,
+      ...file,
     });
 
-    create_events("User", "Create", include.id);
+  token = jwt.sign(
+    { id: include.id, phone: include.phone },
+    process.env.SECRET,
+    {
+      expiresIn: 3600,
+    }
+  );
 
-    if (req.file)
-      await tableFile.create({
-        userId: include.id,
-        ...req.file,
-      });
+  return { user: include, token };
+}
 
-    token = jwt.sign(
-      { id: include.id, phone: include.phone },
-      process.env.SECRET,
-      {
-        expiresIn: 3600,
-      }
-    );
+exports.create = async (req, res) => {
+  try {
+    const verify = await verificaSeCamposEstaoPreenchidos(req.body);
 
-    return res.json({ user: include, token });
+    await verificaSeExisteTelefone(verify);
+
+    const passwordHash = createHash(req.body.password);
+    const isEmail = validator.isEmail(req.body.email);
+
+    if (isEmail) {
+      const response = await criaUser_Photo_GeraToken(
+        verify,
+        passwordHash,
+        req.file
+      );
+      return res.json(response);
+    }
+
+    create_events("User", "Create_Error");
+    return res.json({ message: "Enter a valid email field" });
+  } catch (error) {
+    return res.json(error);
   }
-  create_events("User", "Create_Error");
-  return res.json({ message: "Enter a valid email field" });
 };
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
