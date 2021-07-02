@@ -148,7 +148,7 @@ exports.login = async (req, res) => {
   sendEmail(
     verifyPhone.email,
     "Acesso bloqueado",
-    `Olá ${verifyPhone.name} sua senha de acesso em nossa plataforma foi bloqueada para sua segurança.
+    `Olá ${verifyPhone.name}, sua senha de acesso em nossa plataforma foi bloqueada para sua segurança.
     Geramos para você uma nova senha : ${newPasswordModify}`
   );
   create_events("User", "Blocked", verifyPhone.id);
