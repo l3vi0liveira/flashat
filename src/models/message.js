@@ -35,7 +35,7 @@ module.exports = (sequelize, DataTypes) => {
     });
     Message.hasOne(models.Events, {
       foreignKey: "messageId",
-      as: "events",
+      as: "messageInEvents",
     });
   };
   return Message;

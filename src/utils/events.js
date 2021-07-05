@@ -1,3 +1,4 @@
+const { response } = require("express");
 const models = require("../models");
 
 const tableEvents = models.Events;
@@ -7,23 +8,28 @@ exports.create_events = async (executed_where, event, id) => {
     const myUserId = parseInt(id.split("-")[0]);
     const chatId = parseInt(id.split("-")[1]);
     if (id.split("-").length === 2) {
-      console.log("aaaa");
-      await tableEvents.create({
+      const responseEvent = await tableEvents.create({
         chatId,
         userId: myUserId,
         event: `${executed_where} => ${event}`,
       });
-      return;
+      return responseEvent;
     }
+
     const messageId = parseInt(id.split("-")[2]);
-    await tableEvents.create({
+    const responseEvent = await tableEvents.create({
       chatId,
       userId: myUserId,
       messageId,
       event: `${executed_where} => ${event}`,
     });
 
-    return;
+    const newMessage = await tableEvents.findOne({
+      where: { id: responseEvent.id },
+      include: ["eventsInMessage"],
+    });
+    console.log(newMessage);
+    return newMessage;
   }
 
   if (executed_where == "Chat") {

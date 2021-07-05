@@ -29,7 +29,7 @@ exports.sendMessage = async (req, res) => {
       text: req.body.text,
     });
 
-    create_events(
+    const messageCreated = await create_events(
       "Message",
       "Create",
       `${myUserId.id}-${chatID}-${sendMessage.id}`
@@ -54,7 +54,7 @@ exports.sendMessage = async (req, res) => {
       },
     });
 
-    return res.json(result);
+    return res.json({ result, event: messageCreated });
   }
 
   return res.json({ message: "You don't belong in this chat" });
@@ -91,9 +91,12 @@ exports.showMessage = async (req, res) => {
       },
     });
 
-    create_events("Message", "Viewed", `${myUserId.id}-${findChatUser.id}`);
-
-    return res.json(showMessage);
+    const messageViewed = await create_events(
+      "Message",
+      "Viewed",
+      `${myUserId.id}-${findChatUser.id}`
+    );
+    return res.json({ showMessage, Event: messageViewed.event });
   }
   return res.json({ message: "You don't belong in this chat" });
 };
