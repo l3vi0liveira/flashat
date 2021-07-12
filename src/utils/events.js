@@ -28,7 +28,6 @@ exports.create_events = async (executed_where, event, id) => {
       where: { id: responseEvent.id },
       include: ["eventsInMessage"],
     });
-    console.log(newMessage);
     return newMessage;
   }
 

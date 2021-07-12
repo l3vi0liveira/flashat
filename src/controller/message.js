@@ -53,6 +53,7 @@ exports.sendMessage = async (req, res) => {
         as: "file",
       },
     });
+    req.io.emit("new-message", sendMessage);
 
     return res.json({ result, event: messageCreated });
   }

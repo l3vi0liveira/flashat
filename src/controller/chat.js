@@ -7,6 +7,17 @@ const tableMessage = models.Message;
 const { Op } = require("sequelize");
 const jwt = require("jsonwebtoken");
 const { create_events } = require("../utils/events");
+const { restart } = require("nodemon");
+
+async function verificaCampos(req) {
+  const { name, members } = req;
+  console.log(name);
+  if (req.name) {
+    await create_events("Chat", "Create_Group_Error");
+    throw { message: "All fields are mandatory", error: true };
+  }
+  return;
+}
 
 exports.createchat = async (req, res) => {
   const myUserId = req.myUserId;
@@ -74,6 +85,16 @@ exports.createchat = async (req, res) => {
   }
 
   return res.json({ message: "UserId not exists" });
+};
+
+exports.createGroup = async (req, res) => {
+  try {
+    verificaCampos(req.body);
+    console.log(req.body);
+    res.json({ message: "chegou aqui" });
+  } catch (error) {
+    return res.json(error);
+  }
 };
 
 exports.showchats = async (req, res) => {
