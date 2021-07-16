@@ -48,12 +48,9 @@ exports.sendMessage = async (req, res) => {
 
     const result = await tableMessage.findOne({
       where: { id: sendMessage.id },
-      include: {
-        model: tableFile,
-        as: "file",
-      },
+      include: ["users", "file"],
     });
-    req.io.emit("new-message", sendMessage);
+    req.io.emit("new-message", result);
 
     return res.json({ result, event: messageCreated });
   }
