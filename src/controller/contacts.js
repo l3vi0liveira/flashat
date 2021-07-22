@@ -16,6 +16,7 @@ exports.mycontacts = async (req, res) => {
       },
     },
     attributes: { exclude: ["password", "createdAt", "updatedAt"] },
+    include: ["file"],
   });
 
   create_events("Contacts", "Show", myUserId.id);

@@ -9,7 +9,10 @@ module.exports = {
       cb(null, path.resolve(__dirname, "..", "..", "tmp", "uploads"));
     },
     filename: (req, file, cb) => {
-      const filename = `${new Date().getTime()}-${file.originalname.replace(/ /g,"-")}`;
+      const filename = `${new Date().getTime()}-${file.originalname.replace(
+        / /g,
+        "-"
+      )}`;
       cb(null, filename);
     },
   }),

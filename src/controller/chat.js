@@ -2,12 +2,11 @@ const models = require("../models");
 
 const tableChat = models.Chat;
 const tableUser = models.User;
-const tableMessage = models.Message;
+const tableFile = models.File;
 
-const { Op } = require("sequelize");
 const jwt = require("jsonwebtoken");
 const { create_events } = require("../utils/events");
-const { restart } = require("nodemon");
+const { Op } = require("sequelize");
 
 async function verificaCampos(req) {
   const { name, members } = req;
@@ -142,5 +141,17 @@ exports.showchats = async (req, res) => {
     };
   }, {});
 
-  return res.json(Object.values(response2));
+  let i = 0;
+  const files = [];
+  for (i = 1; i <= response.length; i += 2) {
+    files.push(response[i].id);
+  }
+  const findFile = await tableFile.findAll({
+    where: {
+      userId: {
+        [Op.in]: files,
+      },
+    },
+  });
+  return res.json(Object.values({ response2, findFile }));
 };

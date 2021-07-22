@@ -58,7 +58,7 @@ async function criaUser_Photo_GeraToken(user, password, file) {
     { id: include.id, phone: include.phone },
     process.env.SECRET,
     {
-      expiresIn: 3600,
+      expiresIn: 28800,
     }
   );
 
@@ -129,7 +129,7 @@ exports.login = async (req, res) => {
       { id: verifyPhone.id, phone: verifyPhone.phone },
       process.env.SECRET,
       {
-        expiresIn: 3600,
+        expiresIn: 28800,
       }
     );
 
